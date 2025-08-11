@@ -20,24 +20,28 @@ let isAM = true;
 let selectedHour = null;
 
 const moveMap = {
-  1: ["G1", "F1"],
-  2: ["G3", "F3"],
-  3: ["G5", "F5"],
-  4: ["A5", "B5"],
-  5: ["A3", "B3"],
-  6: ["A1", "B1"]
-  
+    1: ["G1", "F1"],
+    2: ["G3", "F3"],
+    3: ["G5", "F5"],
+    4: ["A5", "B5"],
+    5: ["A3", "B3"],
+    6: ["A1", "B1"],
+    7: ["F1", "α4"],
+    8: ["F5", "α2"],
+    9: ["B3", "α3"],
+    10: ["B1", "α1"]
+
 };
 
 // Calculate grid point coordinates
 gridCols.forEach((colLetter, colIdx) => {
-  gridRows.forEach((rowNumber, rowIdx) => {
-    const label = `${colLetter}${rowNumber}`;
-    points[label] = [
-      offsetX + colIdx * spacingX,
-      offsetY + rowIdx * spacingY
-    ];
-  });
+    gridRows.forEach((rowNumber, rowIdx) => {
+        const label = `${colLetter}${rowNumber}`;
+        points[label] = [
+            offsetX + colIdx * spacingX,
+            offsetY + rowIdx * spacingY
+        ];
+    });
 });
 
 const squarePath = ['B1', 'F1', 'F5', 'B5'];
