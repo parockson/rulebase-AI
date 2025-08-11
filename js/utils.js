@@ -72,23 +72,28 @@ function drawGrid() {
         }
     });
 
-    // ===== Draw intersection points with α1, α2... labels =====
+    // ===== Draw intersection points & store them in points =====
     intersections.forEach((pt, i) => {
+        const label = `α${i + 1}`;
+        points[label] = pt; // store coordinate
+
+        // Draw red intersection dot
         ctx.fillStyle = "red";
         ctx.beginPath();
         ctx.arc(pt[0], pt[1], 6, 0, 2 * Math.PI);
         ctx.fill();
 
-        const label = `α${i + 1}`;
+        // Draw label background
         ctx.fillStyle = "white";
         ctx.fillRect(pt[0] + 10, pt[1] - 20, 40, 18);
 
+        // Draw label text
         ctx.fillStyle = "red";
         ctx.font = "bold 16px Arial";
         ctx.fillText(label, pt[0] + 15, pt[1] - 7);
     });
 
-    // Node dots & labels
+    // Node dots & labels (including α points)
     ctx.fillStyle = "black";
     ctx.font = "12px Arial";
     for (const label in points) {
