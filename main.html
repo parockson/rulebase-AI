@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>7×5 Grid with Yellow Vertical Lines</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 20px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            background: #f0f0f0;
+            overflow: auto;
+        }
+        #container {
+            width: 100%;
+            max-width: 1200px;
+            overflow: visible;
+        }
+        #canvas {
+            background: white;
+            box-shadow: 0 0 20px rgba(0,0,0,0.3);
+            display: block;
+            margin: 0 auto;
+        }
+    </style>
+</head>
+<body>
+    <div id="container">
+        <canvas id="canvas"></canvas>
+    </div>
+
+    <script>
+        // Grid configuration
+        const cols = ["A", "B", "C", "D", "E", "F", "G"];
+        const rows = ["1", "2", "3", "4", "5"];
+        const cellSize = 120; // Large cell size
+        const margin = 60; // Generous margin
+        
+        // Calculate canvas size
+        const canvasWidth = (cols.length - 1) * cellSize + margin * 2;
+        const canvasHeight = (rows.length - 1) * cellSize + margin * 2;
+        
+        // Canvas setup
+        const canvas = document.getElementById("canvas");
+        const ctx = canvas.getContext("2d");
+        canvas.width = canvasWidth;
+        canvas.height = canvasHeight;
+        
+        // Calculate all grid points
+        const points = {};
+        cols.forEach((col, colIndex) => {
+            rows.forEach((row, rowIndex) => {
+                points[col + row] = [
+                    margin + colIndex * cellSize,
+                    margin + rowIndex * cellSize
+                ];
+            });
+        });
+        
+        function draw() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            
+            // 1. Draw grid lines
+            ctx.strokeStyle = "#ddd";
+            ctx.lineWidth = 2;
+            
+            // Vertical lines
+            for (let i = 0; i < cols.length; i++) {
+                ctx.beginPath();
+                ctx.moveTo(margin + i * cellSize, margin);
+                ctx.lineTo(margin + i * cellSize, margin + (rows.length - 1) * cellSize);
+                ctx.stroke();
+            }
+            
+            // Horizontal lines
+            for (let i = 0; i < rows.length; i++) {
+                ctx.beginPath();
+                ctx.moveTo(margin, margin + i * cellSize);
+                ctx.lineTo(margin + (cols.length - 1) * cellSize, margin + i * cellSize);
+                ctx.stroke();
+            }
+            
+            // 2. Draw outer rectangle (blue)
+            ctx.strokeStyle = "blue";
+            ctx.lineWidth = 4;
+            ctx.beginPath();
+            ctx.moveTo(...points["A1"]);
+            ctx.lineTo(...points["G1"]);
+            ctx.lineTo(...points["G5"]);
+            ctx.lineTo(...points["A5"]);
+            ctx.closePath();
+            ctx.stroke();
+            
+            // 3. Draw vertical lines (B1-B5 and F1-F5 in YELLOW)
+            ctx.strokeStyle = "yellow";
+            ctx.lineWidth = 4; // Thicker yellow lines
+            ctx.shadowColor = "rgba(0,0,0,0.3)";
+            ctx.shadowBlur = 5;
+            
+            // B1-B5 line
+            ctx.beginPath();
+            ctx.moveTo(...points["B1"]);
+            ctx.lineTo(...points["B5"]);
+            ctx.stroke();
+            
+            // F1-F5 line
+            ctx.beginPath();
+            ctx.moveTo(...points["F1"]);
+            ctx.lineTo(...points["F5"]);
+            ctx.stroke();
+            
+            ctx.shadowColor = "transparent";
+            
+            // 4. Draw diagonals (purple)
+            ctx.strokeStyle = "purple";
+            ctx.lineWidth = 3;
+            ctx.beginPath();
+            ctx.moveTo(...points["B1"]);
+            ctx.lineTo(...points["F5"]);
+            ctx.stroke();
+            
+            ctx.beginPath();
+            ctx.moveTo(...points["F1"]);
+            ctx.lineTo(...points["B5"]);
+            ctx.stroke();
+            
+            // 5. Draw center circle (green)
+            const center = points["D3"];
+            const radius = cellSize * 2;
+            ctx.strokeStyle = "green";
+            ctx.lineWidth = 3;
+            ctx.beginPath();
+            ctx.arc(center[0], center[1], radius, 0, 2 * Math.PI);
+            ctx.stroke();
+            
+            // 6. Calculate and draw intersections
+            const diagonals = [
+                [points["B1"], points["F5"]],
+                [points["F1"], points["B5"]]
+            ];
+            
+            const intersections = [];
+            diagonals.forEach(line => {
+                const [p1, p2] = line;
+                const dx = p2[0] - p1[0];
+                const dy = p2[1] - p1[1];
+                
+                const a = dx * dx + dy * dy;
+                const b = 2 * (dx * (p1[0] - center[0]) + dy * (p1[1] - center[1]));
+                const c = Math.pow(p1[0] - center[0], 2) + Math.pow(p1[1] - center[1], 2) - Math.pow(radius, 2);
+                const det = b * b - 4 * a * c;
+                
+                if (det >= 0) {
+                    const t1 = (-b - Math.sqrt(det)) / (2 * a);
+                    const t2 = (-b + Math.sqrt(det)) / (2 * a);
+                    
+                    if (t1 >= 0 && t1 <= 1) intersections.push([p1[0] + t1 * dx, p1[1] + t1 * dy]);
+                    if (t2 >= 0 && t2 <= 1) intersections.push([p1[0] + t2 * dx, p1[1] + t2 * dy]);
+                }
+            });
+            
+            // Draw intersection points
+            intersections.forEach((pt, i) => {
+                ctx.fillStyle = "red";
+                ctx.beginPath();
+                ctx.arc(pt[0], pt[1], 8, 0, 2 * Math.PI);
+                ctx.fill();
+                
+                const label = `α${i+1}`;
+                ctx.fillStyle = "white";
+                ctx.fillRect(pt[0] + 15, pt[1] - 30, 50, 25);
+                ctx.fillStyle = "red";
+                ctx.font = "bold 22px Arial";
+                ctx.fillText(label, pt[0] + 20, pt[1] - 12);
+            });
+            
+            // 7. Draw grid points
+            ctx.fillStyle = "black";
+            ctx.font = "16px Arial";
+            for (const label in points) {
+                const [x, y] = points[label];
+                ctx.beginPath();
+                ctx.arc(x, y, 4, 0, 2 * Math.PI);
+                ctx.fill();
+                ctx.fillText(label, x + 8, y - 8);
+            }
+        }
+        
+        // Initial draw
+        draw();
+        
+        window.addEventListener('resize', () => {
+            const container = document.getElementById('container');
+            container.style.display = 'flex';
+            container.style.justifyContent = 'center';
+        });
+    </script>
+</body>
+</html>

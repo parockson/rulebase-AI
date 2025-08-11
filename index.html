@@ -1,25 +1,33 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Grid Marble Game with Clickable Clock</title>
-  <link rel="stylesheet" href="styles.css">
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Grid Marble Game with Clickable Clock</title>
+    <link rel="stylesheet" href="styles.css">
 </head>
+
 <body>
-  <div id="controls">
-    <button onclick="resetMarbles()">Reset</button>
-    <button onclick="toggleAmPm()" id="amPmBtn">AM</button>
+    <div id="controls">
+        <button onclick="resetMarbles()">Reset</button>
+        <button onclick="toggleAmPm()" id="amPmBtn">AM</button>
 
-    <!-- Clickable Clock -->
-    <svg id="clock" viewBox="0 0 200 200">
-      <circle cx="100" cy="100" r="90" stroke="black" stroke-width="2" fill="white"/>
-      <!-- Clock numbers will be populated by JS -->
-    </svg>
-  </div>
+        <!-- Clickable Clock -->
+        <svg id="clock" viewBox="0 0 200 200">
+            <circle cx="100" cy="100" r="90" stroke="black" stroke-width="2" fill="white" />
+            <!-- Clock numbers will be populated by JS -->
+        </svg>
+    </div>
 
-  <canvas id="gridCanvas" width="700" height="500"></canvas>
+    <canvas id="gridCanvas" width="700" height="500"></canvas>
 
-  <script src="script.js"></script>
+    <script src="js/constants.js"></script>
+    <script src="js/drawing.js"></script>
+    <script src="js/utils.js"></script>
+    <script src="js/events.js"></script>
+    <script src="js/clock.js"></script>
+    <script src="js/main.js"></script>
 </body>
+
 </html>

@@ -1,0 +1,3 @@
+// ===== INIT =====
+renderClockNumbers();
+drawGrid();
